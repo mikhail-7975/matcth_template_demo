@@ -8,7 +8,7 @@ def find_template(img, template):
     w, h = template.shape[::-1]
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     res = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
-    threshold = 0.7
+    threshold = 0.8
     bboxes = []
     loc = np.where( res >= threshold)
     for pt in zip(*loc[::-1]):
@@ -41,7 +41,7 @@ if __name__ == "__main__":
         # cv2.imwrite(f'templates/me_{time.time()}.jpg', img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        time.sleep(0.5)
+        # time.sleep(1)
 
     cap.release() 
     # Destroy all the windows 
