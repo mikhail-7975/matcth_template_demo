@@ -3,6 +3,14 @@ import numpy as np
 from matplotlib import pyplot as plt
 import time
 from pathlib import Path
+from threading import Thread
+
+current_image = np.zeros((1000, 1000, 3), dtype=np.uint8)
+
+def read_cap(cap):
+    global current_image
+    while(1):
+        ret, current_image = cap.read()
 
 def find_template(img, template):
     w, h = template.shape[::-1]
@@ -24,12 +32,14 @@ def draw_bboxes(img, bboxes):
 
 if __name__ == "__main__":
     cap = cv2.VideoCapture(0)
+    Thread(target=read_cap, args=(cap,)).start()
+
     templates_files = list(map(str, Path("templates/").glob("*.jpg")))
     print(templates_files)
     templates = [cv2.imread(i, cv2.IMREAD_GRAYSCALE) for i in templates_files]
     # template = cv2.imread('me.jpg', cv2.IMREAD_GRAYSCALE)
     while(1):
-        ret, img = cap.read()
+        img = current_image.copy() # cap.read()
     # img_rgb = cv2.imread('knot_detection.jpg')
     # assert img_rgb is not None, "file could not be read, check with os.path.exists()"
         all_boxes = []
